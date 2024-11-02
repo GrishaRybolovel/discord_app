@@ -24,7 +24,6 @@ function App() {
       try {
         // Decode and parse the user data
         const userData = JSON.parse(decodeURIComponent(params.user));
-        sessionStorage.setItem("user", JSON.stringify(userData));
         login(userData);
 
         // Clear the query params from URL
@@ -34,6 +33,21 @@ function App() {
       }
     }
   }, [login]);
+
+  useEffect(() => {
+    const user = sessionStorage.getItem("user");
+    // Check if 'user' parameter exists in URL
+    if (user) {
+      try {
+        // Decode and parse the user data
+        const userData = JSON.parse(user);
+        login(userData);
+        console.log('User data from sessionStorage:', userData);
+      } catch (error) {
+        console.error('Failed to parse user data from sessionStorage:', error);
+      }
+    }
+  }, []);
 
   return (
     <UserProvider>

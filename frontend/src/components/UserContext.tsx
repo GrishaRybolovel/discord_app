@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { User } from '../interfaces/User';
 
 interface UserContextType {
@@ -12,8 +12,26 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  const login = (userData: User) => setUser(userData);
-  const logout = () => setUser(null);
+  useEffect(() => {
+    const storedUser = sessionStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const login = (userData: User) => {
+    try{
+    setUser(userData)
+    sessionStorage.setItem("user", JSON.stringify(userData));
+    console.log("User data:", user);
+    } catch (error) {
+      console.error('Failed to login:', error);
+    }
+  };
+  const logout = () => {
+    sessionStorage.removeItem("user");
+    setUser(null)
+  };
 
   return (
     <UserContext.Provider value={{ user, login, logout }}>

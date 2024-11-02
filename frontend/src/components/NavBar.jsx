@@ -4,6 +4,7 @@ import logo from '../assets/img/logo.svg';
 import navIcon1 from '../assets/img/discord-white-icon.svg';
 import { HashLink } from 'react-router-hash-link';
 import React from 'react';
+import { useUser } from "./UserContext";
 
 export const NavBar = () => {
 
@@ -11,6 +12,8 @@ export const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const discordAuthUrl = import.meta.env.VITE_DISCORD_AUTH_URL;
   const channelUrl = import.meta.env.VITE_CHANNEL_URL;
+
+  const { user, login, logout } = useUser();
 
   useEffect(() => {
     const onScroll = () => {
@@ -21,10 +24,12 @@ export const NavBar = () => {
       }
     }
 
+    console.log(user);
+
     window.addEventListener("scroll", onScroll);
 
     return () => window.removeEventListener("scroll", onScroll);
-  }, [])
+  }, []);
 
   const onUpdateActiveLink = (value) => {
     setActiveLink(value);
@@ -33,6 +38,7 @@ export const NavBar = () => {
   const redirectToDiscordAuth = () => {
     window.location.href = discordAuthUrl;
   };
+
 
   return (
     <Navbar expand="md" className={scrolled ? "scrolled" : ""}>
@@ -53,12 +59,23 @@ export const NavBar = () => {
             <Nav.Link href="/journey" className={activeLink === 'journey' ? 'active navbar-link' : 'navbar-link'} onClick={() => onUpdateActiveLink('journey')}>Journey</Nav.Link>
           </Nav>
           <span className="navbar-text">
-            <div className="social-icon">
+            <div className="social-icon" style={{ marginRight: "18px" }}>
               <a href={channelUrl}><img src={navIcon1} alt="" /></a>
             </div>
-            <HashLink to='#discord'>
-              <button className="vvd" onClick={redirectToDiscordAuth}><span>Join</span></button>
-            </HashLink>
+            {user ?
+              (
+                <>
+                  <span className="fw-bold text-white">Hi, {user.username}</span>
+                  <HashLink to='#discord'>
+                    <button className="vvd" onClick={logout}><span>Logout</span></button>
+                  </HashLink>
+                </>
+              ) :
+              (
+                <HashLink to='#discord'>
+                  <button className="vvd" onClick={redirectToDiscordAuth}><span>Join</span></button>
+                </HashLink>
+              )}
           </span>
         </Navbar.Collapse>
       </Container>
