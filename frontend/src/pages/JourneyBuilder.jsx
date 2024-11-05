@@ -165,10 +165,6 @@ const Journey = () => {
         }));
     };
 
-    const handleSave = () => {
-        console.log("Updated Scenario Data:", JSON.stringify(scenarioData, null, 2));
-    };
-
     const handleDownloadJSON = () => {
         const dataStr = JSON.stringify(scenarioData, null, 2);
         const blob = new Blob([dataStr], { type: 'application/json' });

@@ -13,7 +13,8 @@ export const NavBar = () => {
   const discordAuthUrl = import.meta.env.VITE_DISCORD_AUTH_URL;
   const channelUrl = import.meta.env.VITE_CHANNEL_URL;
 
-  const { user, login, logout } = useUser();
+  const { user, login, logout, refreshUserData } = useUser();
+
 
   useEffect(() => {
     const onScroll = () => {
@@ -24,12 +25,26 @@ export const NavBar = () => {
       }
     }
 
-    console.log(user);
-
     window.addEventListener("scroll", onScroll);
 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log("User before fetching: ", user);
+      if (!user) {
+        try {
+          await refreshUserData();
+          console.log("User after fetching: ", user);
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [refreshUserData]);
 
   const onUpdateActiveLink = (value) => {
     setActiveLink(value);
@@ -66,13 +81,13 @@ export const NavBar = () => {
               (
                 <>
                   <span className="fw-bold text-white">Hi, {user.username}</span>
-                  <HashLink to='#discord'>
+                  <HashLink>
                     <button className="vvd" onClick={logout}><span>Logout</span></button>
                   </HashLink>
                 </>
               ) :
               (
-                <HashLink to='#discord'>
+                <HashLink to='#home'>
                   <button className="vvd" onClick={redirectToDiscordAuth}><span>Join</span></button>
                 </HashLink>
               )}

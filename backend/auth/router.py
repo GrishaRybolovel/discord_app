@@ -13,12 +13,6 @@ REDIRECT_URI = os.environ.get("REDIRECT_URI")
 FRONTEND_URI = os.environ.get("FRONTEND_URI")
 PERMISSIONS = os.environ.get("PERMISSIONS")
 
-# DISCORD_CLIENT_ID = "1301684873827844127"
-# DISCORD_CLIENT_SECRET = "2w6zu7HLIsDakMQvw8B5mBN_eTMHmIdU"
-# REDIRECT_URI = "http://localhost:8009/auth/discord/callback"
-# FRONTEND_URI = "http://localhost:3000"
-# VITE_DISCORD_AUTH_URL = "http://localhost:8009/auth/discord"
-
 @auth_router.get("/discord")
 async def discord_login():
     """

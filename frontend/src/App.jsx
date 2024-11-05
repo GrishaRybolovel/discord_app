@@ -14,55 +14,57 @@ import Journey from './pages/JourneyBuilder';
 import IdManager from './pages/IdManager';
 
 function App() {
-  const { user, login } = useUser();
+  const { user, login, logout, refreshUserData } = useUser();
 
   useEffect(() => {
-    const params = queryString.parse(window.location.search);
+    const fetchData = async () => {
+      const params = queryString.parse(window.location.search);
 
-    // Check if 'user' parameter exists in URL
-    if (params.user) {
-      try {
-        // Decode and parse the user data
-        const userData = JSON.parse(decodeURIComponent(params.user));
-        login(userData);
+      // Check if 'user' parameter exists in URL
+      if (params.user) {
+        try {
+          // Decode and parse the user data
+          const userData = JSON.parse(decodeURIComponent(params.user));
+          console.log("User data from URL:", userData);
+          await login(userData);
 
-        // Clear the query params from URL
-        window.history.replaceState({}, document.title, '/');
-      } catch (error) {
-        console.error('Failed to parse user data from URL:', error);
+          // Clear the query params from URL
+          window.history.replaceState({}, document.title, '/');
+        } catch (error) {
+          console.error('Failed to parse user data from URL:', error);
+        }
       }
-    }
-  }, [login]);
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
-    const user = sessionStorage.getItem("user");
-    // Check if 'user' parameter exists in URL
-    if (user) {
-      try {
-        // Decode and parse the user data
-        const userData = JSON.parse(user);
-        login(userData);
-        console.log('User data from sessionStorage:', userData);
-      } catch (error) {
-        console.error('Failed to parse user data from sessionStorage:', error);
+    const fetchData = async () => {
+      if (!user) {
+        try {
+          await refreshUserData();
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+        }
       }
-    }
+    };
+
+    fetchData();
   }, []);
 
   return (
-    <UserProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/commands" element={<Commands />} />
-          <Route path="/faq" element={<Faq />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/tos" element={<Tos />} />
-          <Route path="/journey" element={<Journey />} />
-          <Route path="/admin" element={<IdManager />} />
-        </Routes>
-      </BrowserRouter>
-    </UserProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/commands" element={<Commands />} />
+        <Route path="/faq" element={<Faq />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/tos" element={<Tos />} />
+        <Route path="/journey" element={<Journey />} />
+        <Route path="/admin" element={<IdManager />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -14,6 +14,7 @@ export const Banner = () => {
   const [index, setIndex] = useState(1);
   const toRotate = ["The #1", "Top 1", "The best"];
   const period = 1000;
+  const discordAuthUrl = import.meta.env.VITE_DISCORD_AUTH_URL;
 
   useEffect(() => {
     let ticker = setInterval(() => {
@@ -48,6 +49,10 @@ export const Banner = () => {
     }
   }
 
+  const redirectToDiscordAuth = () => {
+    window.location.href = discordAuthUrl;
+  };
+
   return (
     <section className="banner" id="home">
       <Container>
@@ -62,7 +67,7 @@ export const Banner = () => {
                   <br />
                   <br />
                   <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-                  <button onClick={() => console.log('connect')}>Join <ArrowRightCircle size={25} /></button>
+                  <button onClick={redirectToDiscordAuth}>Join <ArrowRightCircle size={25} /></button>
                 </div>}
             </TrackVisibility>
           </Col>
